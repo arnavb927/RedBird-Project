@@ -115,8 +115,8 @@ void loop()
     digitalWrite(DRIVE_LED_PIN, HIGH);
 
     // Check APPS fault
-    float scaledApps3V3 = (static_cast<float>(apps3V3) / 1023.0) * (5.0 / 3.3) * 1023.0;
-    float diffPercent = abs(apps5V - scaledApps3V3) / static_cast<float>(PEDAL_MAX);
+    float scaledApps3V3 = static_cast<float>(apps3V3) * (5.0 / 3.3);
+    float diffPercent = abs(apps5V - scaledApps3V3) / static_cast<float>(PEDAL_MAX-PEDAL_MIN);
 
     if (diffPercent > APPS_FAULT_THRESHOLD)
     {
@@ -140,9 +140,11 @@ void loop()
     }
 
     // Calculate Torque
-    int avgPedal = (apps5V + static_cast<int>(scaledApps3V3)) / 2;
+    float avgPedal = (static_cast<float>(apps5V) + scaledApps3V3) / 2.0f;
     float pedalPercent = static_cast<float>(avgPedal - PEDAL_MIN) / (PEDAL_MAX - PEDAL_MIN);
-    calculatedTorque = static_cast<int16_t>(pedalPercent * (TORQUE_MAX - TORQUE_MIN) + TORQUE_MIN);
+    pedalPercent = max(0.0f, min(1.0f, pedalPercent));
+    int16_t torqueScale = FLIP_MOTOR_DIRECTION ? TORQUE_MIN : TORQUE_MAX;
+    calculatedTorque = static_cast<int16_t>(pedalPercent * static_cast<float>(torqueScale));
 
     if (FLIP_MOTOR_DIRECTION)
     {
@@ -152,7 +154,6 @@ void loop()
     break;
   }
 
-  delay(10);
 }
 
 // put function definitions here:
