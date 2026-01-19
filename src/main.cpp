@@ -13,7 +13,7 @@
 
 MCP2515 canMotor(CAN_CS_MOTOR);
 MCP2515 canBMS(CAN_CS_BMS);
-MCP2515 canDebug(CAN_CS_BMS);
+MCP2515 canDebug(CAN_CS_DEBUG);
 
 
 // Thresholds and Constants
@@ -74,9 +74,10 @@ void setup()
   if (canBMS.setBitrate(CAN_500KBPS, MCP_20MHZ) != MCP2515::ERROR_OK) {
     while(1);
   }
-  canBMS.setMode(MCP_NORMAL);
+  canBMS.setNormalMode(MCP_NORMAL);
 
-  if (canDebug.begin(MCP_ANY, CAN_BAUDRATE, MCP_20MHZ) != CAN_OK) {
+  canDebug.reset();
+  if (canDebug.setBitrate(CAN_500KBPS, MCP_20MHZ) != MCP2515::ERROR_OK) {
     while (1);
   }
   canDebug.setNormalMode();
@@ -144,15 +145,15 @@ void loop()
     digitalWrite(DRIVE_LED_PIN, HIGH);
 
     // Check APPS fault
-    float scaledApps3V3 = static_cast<float>(apps3V3) * (5.0 / 3.3);
-    float diffPercent = abs(apps5V - scaledApps3V3) / static_cast<float>(PEDAL_MAX-PEDAL_MIN);
-
-    if (diffPercent > APPS_FAULT_THRESHOLD) {
+    int32_t left = (int32_t)apps5V * 33;
+    int32_t right = (int32_t)apps3V3 *50;
+    int32_t abs_diff_scaled = labs(left-right);
+    int32_t range = PEDAL_MAX - PEDAL_MIN;
+    if (10 * abs_diff_scaled > range * 33) {
       if (!isFaulty) {
         faultStartTime = millis();
         isFaulty = true;
       }
-
       if (millis() - faultStartTime > APPS_FAULT_TIMEOUT) {
         currentState = INIT;
         calculatedTorque = 0;
@@ -164,17 +165,44 @@ void loop()
       isFaulty = false;
     }
 
-    // Calculate Torque
-    float avgPedal = (static_cast<float>(apps5V) + scaledApps3V3) / 2.0f;
-    float pedalPercent = static_cast<float>(avgPedal - PEDAL_MIN) / (PEDAL_MAX - PEDAL_MIN);
-    pedalPercent = max(0.0f, min(1.0f, pedalPercent));
-    int16_t torqueScale = FLIP_MOTOR_DIRECTION ? TORQUE_MIN : TORQUE_MAX;
-    calculatedTorque = static_cast<int16_t>(pedalPercent * static_cast<float>(torqueScale));
+    //Calculate Torque
+    int64_t num = static_cast<int64_t>(left) + right - static_cast<int64_t>(PEDAL_MIN) *66;
+    int64_t den = 66LL * static_cast<int64_t>(PEDAL_MAX-PEDAL_MIN);
+    int64_t clamped_num = (num<0) ? 0LL : (num>den)?den:num;
+    int16_t torque_scale = FLIP_MOTOR_DIRECTION ? -32768 : 32767;
+    calculatedTorque = static_cast<int16_t>((clamped_num * static_cast<int64_t>(torque_scale))/den);
 
-    if (FLIP_MOTOR_DIRECTION)
-    {
-      calculatedTorque *= -1;
-    }
+    // float scaledApps3V3 = static_cast<float>(apps3V3) * (5.0 / 3.3);
+    // float diffPercent = abs(apps5V - scaledApps3V3) / static_cast<float>(PEDAL_MAX-PEDAL_MIN);
+
+    // if (diffPercent > APPS_FAULT_THRESHOLD) {
+    //   if (!isFaulty) {
+    //     faultStartTime = millis();
+    //     isFaulty = true;
+    //   }
+
+    //   if (millis() - faultStartTime > APPS_FAULT_TIMEOUT) {
+    //     currentState = INIT;
+    //     calculatedTorque = 0;
+    //     isFaulty = false;
+    //     break;
+    //   }
+    // }
+    // else {
+    //   isFaulty = false;
+    // }
+
+    // // Calculate Torque
+    // float avgPedal = (static_cast<float>(apps5V) + scaledApps3V3) / 2.0f;
+    // float pedalPercent = static_cast<float>(avgPedal - PEDAL_MIN) / (PEDAL_MAX - PEDAL_MIN);
+    // pedalPercent = max(0.0f, min(1.0f, pedalPercent));
+    // int16_t torqueScale = FLIP_MOTOR_DIRECTION ? TORQUE_MIN : TORQUE_MAX;
+    // calculatedTorque = static_cast<int16_t>(pedalPercent * static_cast<float>(torqueScale));
+
+    // if (FLIP_MOTOR_DIRECTION)
+    // {
+    //   calculatedTorque *= -1;
+    // }
     
     can_message_t msg;
     msg.can_id = MOTOR_TORQUE_ID;
@@ -182,18 +210,18 @@ void loop()
     msg.data[0] = 0x00;
     msg.data[1] = 0x01;
     msg.data[2] = 0x02;
-    msg.data[2] = 0x90;
-    msg.data[2] = static_cast<uint8_t>(calculatedTorque & 0xFF);
-    msg.data[2] = static_cast<uint8_t>((calculatedTorque >> 8) & 0xFF);
-    msg.data[2] = 0x00;
-    msg.data[2] = 0x00;
+    msg.data[3] = 0x90;
+    msg.data[4] = static_cast<uint8_t>(calculatedTorque & 0xFF);
+    msg.data[5] = static_cast<uint8_t>((calculatedTorque >> 8) & 0xFF);
+    msg.data[6] = 0x00;
+    msg.data[7] = 0x00;
 
     canMotor.sendMessage(&msg);
     break;
   }
 
   can_message_t pedalMsg;
-  peadalMsg.can_id = DEBUG_PEDALS_ID;
+  pedalMsg.can_id = DEBUG_PEDALS_ID;
   pedalMsg.can_dlc = 8;
   pedalMsg.data[0] = (uint8_t)(apps5V & 0xFF);
   pedalMsg.data[1] = (uint8_t)(apps5V >> 8);
@@ -206,7 +234,7 @@ void loop()
   canDebug.sendMessage(&pedalMsg);
 
   can_message_t stateMsg;
-  stateMsge.can_id = DEBUG_STATE_ID;
+  stateMsg.can_id = DEBUG_STATE_ID;
   stateMsg.can_dlc = 8;
   stateMsg.data[0] = (uint8_t)currentState;
   stateMsg.data[1] = 0;
@@ -216,7 +244,7 @@ void loop()
   stateMsg.data[5] = 0;
   stateMsg.data[6] = 0;
   stateMsg.data[7] = 0;
-  canDebug,sendMessage(&stateMsg);
+  canDebug.sendMessage(&stateMsg);
 
   if (isFaulty) {
     can_message_t faultMsg;
