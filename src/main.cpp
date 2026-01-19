@@ -1,20 +1,19 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <mcp_can.h>
 #include <config.h>
 // Pin Definitions
-#define APPS_5V_PIN A0     // PC0 analog
-#define APPS_3V3_PIN A1    // PC1 analog
-#define BRAKE_PIN A3       // PC3 analog
-#define START_BUTTON_PIN 4 // PC4 digital input
+#define APPS_5V_PIN PC0     // PC0 analog
+#define APPS_3V3_PIN PC1    // PC1 analog
+#define BRAKE_PIN PC3       // PC3 analog
+#define START_BUTTON_PIN PC4 // PC4 digital input
 
-#define BRAKE_LIGHT_PIN 2 // PD2 digital output
-#define BUZZER_PIN 4      // PD4 digital output
-#define DRIVE_LED_PIN 3   // PD3 digital output
+#define BRAKE_LIGHT_PIN PD2 // PD2 digital output
+#define BUZZER_PIN PD4      // PD4 digital output
+#define DRIVE_LED_PIN PD3   // PD3 digital output
 
-MCP_CAN canMotor(CAN_CS_MOTOR);
-MCP_CAN canBMS(CAN_CS_BMS);
-MCP_CAN canDebug(CAN_CS_BMS);
+MCP2515 canMotor(CAN_CS_MOTOR);
+MCP2515 canBMS(CAN_CS_BMS);
+MCP2515 canDebug(CAN_CS_BMS);
 
 
 // Thresholds and Constants
@@ -65,12 +64,15 @@ void setup()
   stateStartTime = millis();
 
   SPI.begin(); //init SPI bus
-  if (canMotor.begin(MCP_ANY, CAN_BAUDRATE, MCP_20MHZ) != CAN_OK) {
+
+  canMotor.reset();
+  if (canMotor.setBitrate(CAN_500KBPS, MCP_20MHZ) != MCP2515::ERROR_OK) {
     while (1);
   }
-  canMotor.setMode(MCP_NORMAL);
+  canMotor.setNormalMode();
 
-  if (canBMS.begin(MCP_ANY, CAN_BAUDRATE, MCP_20MHZ) != CAN_OK) {
+  canBMS.reset();
+  if (canBMS.setBitrate(CAN_500KBPS, MCP_20MHZ) != MCP2515::ERROR_OK) {
     while(1);
   }
   canBMS.setMode(MCP_NORMAL);
@@ -78,7 +80,8 @@ void setup()
   if (canDebug.begin(MCP_ANY, CAN_BAUDRATE, MCP_20MHZ) != CAN_OK) {
     while (1);
   }
-  canDebug.setMode(MCP_NORMAL);
+  canDebug.setNormalMode();
+
 }
 
 void loop()
@@ -115,11 +118,10 @@ void loop()
     }
 
     if (millis() - stateStartTime >= STARTIN_HOLD_TIME) {
-      unsigned char len = 0;
-      unsigned char rxBuf[8];
-      uint32_t rxId;
-      if (canBMS.readMsgBuf(&rxId, &len, rxBuf) == CAN_OK) {
-        if (rxId == BMS_READY_ID && rxBuf[BMS_READY_BYTE] == BMS_READY_VALUE) {
+      can_message_t msg;
+
+      if (canBMS.readMessage(&msg) == MCP2515::ERROR_OK) {
+        if (msg.can_id == BMS_READY_ID && msg.data[BMS_READY_BYTE] == BMS_READY_VALUE) {
           currentState = BUZZIN;
           stateStartTime = millis();
         }
@@ -176,35 +178,64 @@ void loop()
       calculatedTorque *= -1;
     }
     
-    //send torque to motor via CAN
-    uint8_t motorData[8] = {0x00, 0x01, 0x02, 0x90, 0x00, 0x00, 0x00};
+    can_message_t msg;
+    msg.can_id = MOTOR_TORQUE_ID;
+    msg.can_dlc = 8;
+    msg.data[0] = 0x00;
+    msg.data[1] = 0x01;
+    msg.data[2] = 0x02;
+    msg.data[2] = 0x90;
+    msg.data[2] = static_cast<uint8_t>(calculatedTorque & 0xFF);
+    msg.data[2] = static_cast<uint8_t>((calculatedTorque >> 8) & 0xFF);
+    msg.data[2] = 0x00;
+    msg.data[2] = 0x00;
 
-    //pack torque in little-endian
-    motorData[4] = static_cast<uint8_t>(calculatedTorque & 0xFF);
-    motorData[5] = static_cast<uint8_t>((calculatedTorque >> 8) & 0xFF);
-
-    canMotor.sendMsgBuf(MOTOR_TORQUE_ID, 0, 8, motorData)
+    canMotor.sendMessage(&msg);
     break;
   }
 
-  uint8_t pedalData[8] = {0};
+  can_message_t pedalMsg;
+  peadalMsg.can_id = DEBUG_PEDALS_ID;
+  pedalMsg.can_dlc = 8;
+  pedalMsg.data[0] = (uint8_t)(apps5V & 0xFF);
+  pedalMsg.data[1] = (uint8_t)(apps5V >> 8);
+  pedalMsg.data[2] = (uint8_t)(apps3V3 & 0xFF);
+  pedalMsg.data[3] = (uint8_t)(apps3V3 >> 8);
+  pedalMsg.data[4] = (uint8_t)(brake & 0xFF);
+  pedalMsg.data[5] = (uint8_t)(brake >> 8);
+  pedalMsg.data[6] = 0;
+  pedalMsg.data[7] = 0;
+  canDebug.sendMessage(&pedalMsg);
 
-  pedalData[0] = (uint8_t)(apps5V & 0xFF); pedalData[1] = (uint8_t)(apps5V >> 8);
-  pedalData[2] = (uint8_t)(apps3V3 & 0xFF); pedalData[3] = (uint8_t)(apps3V3 >> 8);
-  pedalData[4] = (uint8_t)(brake & 0xFF); pedalData[5] = (uint8_t)(brake >> 8);
-  canDebug.sendMsgBuf(DEBUG_PEDALS_ID, 0, 8, pedalData);
-
-  uint8_t stateData[8] = {0};
-  stateData[0] =(uint8_t)currentState;
-  canDebug.sendMsgBuf(DEBUG_STATE_ID, 0, 8, stateData);
+  can_message_t stateMsg;
+  stateMsge.can_id = DEBUG_STATE_ID;
+  stateMsg.can_dlc = 8;
+  stateMsg.data[0] = (uint8_t)currentState;
+  stateMsg.data[1] = 0;
+  stateMsg.data[2] = 0;
+  stateMsg.data[3] = 0;
+  stateMsg.data[4] = 0;
+  stateMsg.data[5] = 0;
+  stateMsg.data[6] = 0;
+  stateMsg.data[7] = 0;
+  canDebug,sendMessage(&stateMsg);
 
   if (isFaulty) {
-    uint8_t faultData[8] = {0};
+    can_message_t faultMsg;
+    faultMsg.can_id = DEBUG_FAULT_ID;
+    faultMsg.can_dlc = 8;
     float scaledApps3V3 = static_cast<float>(apps3V3) * (5.0/3.3);
-    uint16_t diff = static_cast<uint16_t>(abs(static_cast<float>(apps5V)-scaledApps3V3));
-    faultData[0] = (uint8_t)(diff & 0xFF);
-    faultData[1] = (uint8_t)(diff >> 8);
-    canDebug.sendMsgBuf(DEBUG_FAULT_ID, 0, 8, faultData);
+    uint16_t diff = static_cast<uint16_t>(abs(static_cast<float>(apps5V) - scaledApps3V3));
+    faultMsg.data[0] = (uint8_t)(diff & 0xFF);
+    faultMsg.data[1] = (uint8_t)(diff>>8);
+    faultMsg.data[2] = 0;
+    faultMsg.data[3] = 0;
+    faultMsg.data[4] = 0;
+    faultMsg.data[5] = 0;
+    faultMsg.data[6] = 0;
+    faultMsg.data[7] = 0;
+    canDebug.sendMessage(&faultMsg);
+
   }
 
 }

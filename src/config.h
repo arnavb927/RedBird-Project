@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #include <stdint.h>
-#include <mcp_can.h>
+#include <mcp2515.h>
 
 // CAN Pins (from board setup)
 const uint8_t CAN_CS_MOTOR = 10;  // PB2 (Arduino pin 10)
