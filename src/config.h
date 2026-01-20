@@ -2,7 +2,7 @@
 #define CONFIG_H
 #include <stdint.h>
 #include <mcp2515.h>
-#include <can.h>
+#include <stdlib.h>
 
 // CAN Pins
 const uint8_t CAN_CS_MOTOR = PIN_PB2;  // PB2 (Arduino pin 10)
@@ -21,13 +21,5 @@ const uint32_t MOTOR_TORQUE_ID = 0x201;    // Motor command ID
 const uint32_t DEBUG_PEDALS_ID = 0x700;    // Message for pedal readings
 const uint32_t DEBUG_STATE_ID = 0x701;     // Message for car state
 const uint32_t DEBUG_FAULT_ID = 0x702;     // Message for faults (send only on fault)
-
-
-// Struct for CAN messages
-struct CanMessage {
-    uint32_t id;
-    uint8_t data[8];
-    uint8_t len = 8;
-};
 
 #endif
