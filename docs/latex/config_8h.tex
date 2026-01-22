@@ -1,0 +1,498 @@
+\doxysection{src/\+config.h File Reference}
+\hypertarget{config_8h}{}\label{config_8h}\index{src/config.h@{src/config.h}}
+
+
+Configuration header for VCU project. Defines pins, CAN settings, thresholds, and constants.  
+
+
+{\ttfamily \+\#include $<$stdint.\+h$>$}\newline
+{\ttfamily \+\#include $<$mcp2515.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdlib.\+h$>$}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{config_8h_afe40c3858724592fa6884996a0f20277}{APPS\+\_\+5\+V\+\_\+\+PIN}}~PIN\+\_\+\+PC0
+\begin{DoxyCompactList}\small\item\em Analog pin for 5V APPS pedal. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_af7301f3b5cdc816cb1b4ece1627478a9}{APPS\+\_\+3\+V3\+\_\+\+PIN}}~PIN\+\_\+\+PC1
+\begin{DoxyCompactList}\small\item\em Analog pin for 3.\+3V APPS pedal. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_ad632b56bf4c6259a390c3db91607078e}{BRAKE\+\_\+\+PIN}}~PIN\+\_\+\+PC3
+\begin{DoxyCompactList}\small\item\em Analog pin for brake pedal. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_af727d34dc72e3f32bd32754111724a0b}{START\+\_\+\+BUTTON\+\_\+\+PIN}}~PIN\+\_\+\+PC4
+\begin{DoxyCompactList}\small\item\em Digital input pin for start button (active low). \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_a40511f39470605555d47027fefb4257e}{BRAKE\+\_\+\+LIGHT\+\_\+\+PIN}}~PIN\+\_\+\+PD2
+\begin{DoxyCompactList}\small\item\em Digital output pin for brake light. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\+\_\+\+PIN}}~PIN\+\_\+\+PD4
+\begin{DoxyCompactList}\small\item\em Digital output pin for buzzer. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\+\_\+\+LED\+\_\+\+PIN}}~PIN\+\_\+\+PD3
+\begin{DoxyCompactList}\small\item\em Digital Output pin for drive mode LED. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const uint8\+\_\+t \doxymbox{\hyperlink{config_8h_a1efb36152e843ad3793c4afc44eb7655}{CAN\+\_\+\+CS\+\_\+\+MOTOR}} = PIN\+\_\+\+PB2
+\begin{DoxyCompactList}\small\item\em Chip select pin for motor CAN. \end{DoxyCompactList}\item 
+const uint8\+\_\+t \doxymbox{\hyperlink{config_8h_a6b172d4141d338e24dabdb4322845521}{CAN\+\_\+\+CS\+\_\+\+BMS}} = PIN\+\_\+\+PB1
+\begin{DoxyCompactList}\small\item\em Chip select pin for BMS CAN. \end{DoxyCompactList}\item 
+const uint8\+\_\+t \doxymbox{\hyperlink{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}{CAN\+\_\+\+CS\+\_\+\+DEBUG}} = PIN\+\_\+\+PB0
+\begin{DoxyCompactList}\small\item\em Chip select pin for debug CAN. \end{DoxyCompactList}\item 
+const long \doxymbox{\hyperlink{config_8h_a87925088512bf5748735f6ecf0efb494}{CAN\+\_\+\+BAUDRATE}} = CAN\+\_\+500\+KBPS
+\begin{DoxyCompactList}\small\item\em CAN Baudrate. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_a297329203717afc10c1a2493aa9be3dc}{BMS\+\_\+\+READY\+\_\+\+ID}} = 0x186040\+F3
+\begin{DoxyCompactList}\small\item\em CAN ID for BMS ready message. \end{DoxyCompactList}\item 
+const uint8\+\_\+t \doxymbox{\hyperlink{config_8h_ad89c893bc0dbf99969e732e3a8b32431}{BMS\+\_\+\+READY\+\_\+\+BYTE}} = 6
+\begin{DoxyCompactList}\small\item\em Byte indix in BMS message for ready value. \end{DoxyCompactList}\item 
+const uint8\+\_\+t \doxymbox{\hyperlink{config_8h_ae07cc25e494efd05b69e28844ed5180a}{BMS\+\_\+\+READY\+\_\+\+VALUE}} = 0x50
+\begin{DoxyCompactList}\small\item\em Expected value for BMS ready. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_a692ebf9745178e18450a6f935acb3bf1}{MOTOR\+\_\+\+TORQUE\+\_\+\+ID}} = 0x201
+\begin{DoxyCompactList}\small\item\em Expected value for BMS ready. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_af6f627d20efa0e7643b87f103ca65c4e}{DEBUG\+\_\+\+PEDALS\+\_\+\+ID}} = 0x700
+\begin{DoxyCompactList}\small\item\em Debug CAN ID for pedal readings. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_a7652f31f9673e4d7e38966ab34fbc14a}{DEBUG\+\_\+\+STATE\+\_\+\+ID}} = 0x701
+\begin{DoxyCompactList}\small\item\em Debug CAN ID for state. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_abb3584639d621819310870d99ad913fe}{DEBUG\+\_\+\+FAULT\+\_\+\+ID}} = 0x702
+\begin{DoxyCompactList}\small\item\em Debug CAN ID for faults. \end{DoxyCompactList}\item 
+const unsigned int \doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{BRAKE\+\_\+\+DEPRESSED\+\_\+\+THRESHOLD}} = 512
+\begin{DoxyCompactList}\small\item\em Brake threshold for depressed state. \end{DoxyCompactList}\item 
+const float \doxymbox{\hyperlink{config_8h_a5b2ea3a230a711076de2c133be879e0f}{APPS\+\_\+\+FAULT\+\_\+\+THRESHOLD}} = 0.\+10
+\begin{DoxyCompactList}\small\item\em APPS fault difference threshold (10\% difference). \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80}{STARTIN\+\_\+\+HOLD\+\_\+\+TIME}} = 2000
+\begin{DoxyCompactList}\small\item\em Hold time for STARTIN state (ms). \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_a689dd3ea00bfbfff92d0b55f362849c3}{BUZZIN\+\_\+\+TIME}} = 2000
+\begin{DoxyCompactList}\small\item\em Buzzer on time in BUZZIN state. \end{DoxyCompactList}\item 
+const uint32\+\_\+t \doxymbox{\hyperlink{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537}{APPS\+\_\+\+FAULT\+\_\+\+TIMEOUT}} = 100
+\begin{DoxyCompactList}\small\item\em APPS fault duration before reset to INIT (ms). \end{DoxyCompactList}\item 
+const bool \doxymbox{\hyperlink{config_8h_a4eb8ce137725a2fdc46c798e2d70442b}{FLIP\+\_\+\+MOTOR\+\_\+\+DIRECTION}} = false
+\begin{DoxyCompactList}\small\item\em Compile-\/\+Time flag to flip motor torque direction. \end{DoxyCompactList}\item 
+const int16\+\_\+t \doxymbox{\hyperlink{config_8h_a16aa319a4021e71d485441a72322bd4f}{TORQUE\+\_\+\+MIN}} = -\/32768
+\begin{DoxyCompactList}\small\item\em Minimum torque value. \end{DoxyCompactList}\item 
+const int16\+\_\+t \doxymbox{\hyperlink{config_8h_a66ada2dcde233d77b31b7598d916accb}{TORQUE\+\_\+\+MAX}} = 32767
+\begin{DoxyCompactList}\small\item\em Maximum torque value. \end{DoxyCompactList}\item 
+const unsigned int \doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{PEDAL\+\_\+\+MIN}} = 0
+\begin{DoxyCompactList}\small\item\em Minimum pedal ADC value. \end{DoxyCompactList}\item 
+const unsigned int \doxymbox{\hyperlink{config_8h_aa56d23a21580605c665cd61288d921a6}{PEDAL\+\_\+\+MAX}} = 1023
+\begin{DoxyCompactList}\small\item\em MAx pedal ADC value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Configuration header for VCU project. Defines pins, CAN settings, thresholds, and constants. 
+
+\begin{DoxyAuthor}{Author}
+Arnav 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2026-\/01-\/22 
+\end{DoxyDate}
+\begin{DoxyNote}{Note}
+Values based on project specs. Adjust for hardware calibration. CAN bitrate fixed at 500kbps. No dynamic values. 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{main_8cpp}{main.\+cpp} for usage. 
+\end{DoxySeeAlso}
+
+
+Definition in file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+
+
+\label{doc-define-members}
+\Hypertarget{config_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{config_8h_af7301f3b5cdc816cb1b4ece1627478a9}\index{config.h@{config.h}!APPS\_3V3\_PIN@{APPS\_3V3\_PIN}}
+\index{APPS\_3V3\_PIN@{APPS\_3V3\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{APPS\_3V3\_PIN}{APPS\_3V3\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_af7301f3b5cdc816cb1b4ece1627478a9} 
+\+\#define APPS\+\_\+3\+V3\+\_\+\+PIN~PIN\+\_\+\+PC1}
+
+
+
+Analog pin for 3.\+3V APPS pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00023}{23}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_afe40c3858724592fa6884996a0f20277}\index{config.h@{config.h}!APPS\_5V\_PIN@{APPS\_5V\_PIN}}
+\index{APPS\_5V\_PIN@{APPS\_5V\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{APPS\_5V\_PIN}{APPS\_5V\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_afe40c3858724592fa6884996a0f20277} 
+\+\#define APPS\+\_\+5\+V\+\_\+\+PIN~PIN\+\_\+\+PC0}
+
+
+
+Analog pin for 5V APPS pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00021}{21}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a40511f39470605555d47027fefb4257e}\index{config.h@{config.h}!BRAKE\_LIGHT\_PIN@{BRAKE\_LIGHT\_PIN}}
+\index{BRAKE\_LIGHT\_PIN@{BRAKE\_LIGHT\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BRAKE\_LIGHT\_PIN}{BRAKE\_LIGHT\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_a40511f39470605555d47027fefb4257e} 
+\+\#define BRAKE\+\_\+\+LIGHT\+\_\+\+PIN~PIN\+\_\+\+PD2}
+
+
+
+Digital output pin for brake light. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00029}{29}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ad632b56bf4c6259a390c3db91607078e}\index{config.h@{config.h}!BRAKE\_PIN@{BRAKE\_PIN}}
+\index{BRAKE\_PIN@{BRAKE\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BRAKE\_PIN}{BRAKE\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_ad632b56bf4c6259a390c3db91607078e} 
+\+\#define BRAKE\+\_\+\+PIN~PIN\+\_\+\+PC3}
+
+
+
+Analog pin for brake pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00025}{25}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ab61d0981ed42df9e18211b273d22cfcd}\index{config.h@{config.h}!BUZZER\_PIN@{BUZZER\_PIN}}
+\index{BUZZER\_PIN@{BUZZER\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BUZZER\_PIN}{BUZZER\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_ab61d0981ed42df9e18211b273d22cfcd} 
+\+\#define BUZZER\+\_\+\+PIN~PIN\+\_\+\+PD4}
+
+
+
+Digital output pin for buzzer. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00031}{31}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ad835fecea4df482f517da1f21a2b3efe}\index{config.h@{config.h}!DRIVE\_LED\_PIN@{DRIVE\_LED\_PIN}}
+\index{DRIVE\_LED\_PIN@{DRIVE\_LED\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{DRIVE\_LED\_PIN}{DRIVE\_LED\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_ad835fecea4df482f517da1f21a2b3efe} 
+\+\#define DRIVE\+\_\+\+LED\+\_\+\+PIN~PIN\+\_\+\+PD3}
+
+
+
+Digital Output pin for drive mode LED. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00033}{33}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_af727d34dc72e3f32bd32754111724a0b}\index{config.h@{config.h}!START\_BUTTON\_PIN@{START\_BUTTON\_PIN}}
+\index{START\_BUTTON\_PIN@{START\_BUTTON\_PIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{START\_BUTTON\_PIN}{START\_BUTTON\_PIN}}
+{\footnotesize\ttfamily \label{config_8h_af727d34dc72e3f32bd32754111724a0b} 
+\+\#define START\+\_\+\+BUTTON\+\_\+\+PIN~PIN\+\_\+\+PC4}
+
+
+
+Digital input pin for start button (active low). 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00027}{27}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+
+
+\label{doc-var-members}
+\Hypertarget{config_8h_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{config_8h_a5b2ea3a230a711076de2c133be879e0f}\index{config.h@{config.h}!APPS\_FAULT\_THRESHOLD@{APPS\_FAULT\_THRESHOLD}}
+\index{APPS\_FAULT\_THRESHOLD@{APPS\_FAULT\_THRESHOLD}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{APPS\_FAULT\_THRESHOLD}{APPS\_FAULT\_THRESHOLD}}
+{\footnotesize\ttfamily \label{config_8h_a5b2ea3a230a711076de2c133be879e0f} 
+const float APPS\+\_\+\+FAULT\+\_\+\+THRESHOLD = 0.\+10}
+
+
+
+APPS fault difference threshold (10\% difference). 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00067}{67}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537}\index{config.h@{config.h}!APPS\_FAULT\_TIMEOUT@{APPS\_FAULT\_TIMEOUT}}
+\index{APPS\_FAULT\_TIMEOUT@{APPS\_FAULT\_TIMEOUT}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{APPS\_FAULT\_TIMEOUT}{APPS\_FAULT\_TIMEOUT}}
+{\footnotesize\ttfamily \label{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537} 
+const uint32\+\_\+t APPS\+\_\+\+FAULT\+\_\+\+TIMEOUT = 100}
+
+
+
+APPS fault duration before reset to INIT (ms). 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00073}{73}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ad89c893bc0dbf99969e732e3a8b32431}\index{config.h@{config.h}!BMS\_READY\_BYTE@{BMS\_READY\_BYTE}}
+\index{BMS\_READY\_BYTE@{BMS\_READY\_BYTE}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BMS\_READY\_BYTE}{BMS\_READY\_BYTE}}
+{\footnotesize\ttfamily \label{config_8h_ad89c893bc0dbf99969e732e3a8b32431} 
+const uint8\+\_\+t BMS\+\_\+\+READY\+\_\+\+BYTE = 6}
+
+
+
+Byte indix in BMS message for ready value. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00049}{49}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a297329203717afc10c1a2493aa9be3dc}\index{config.h@{config.h}!BMS\_READY\_ID@{BMS\_READY\_ID}}
+\index{BMS\_READY\_ID@{BMS\_READY\_ID}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BMS\_READY\_ID}{BMS\_READY\_ID}}
+{\footnotesize\ttfamily \label{config_8h_a297329203717afc10c1a2493aa9be3dc} 
+const uint32\+\_\+t BMS\+\_\+\+READY\+\_\+\+ID = 0x186040\+F3}
+
+
+
+CAN ID for BMS ready message. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00047}{47}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ae07cc25e494efd05b69e28844ed5180a}\index{config.h@{config.h}!BMS\_READY\_VALUE@{BMS\_READY\_VALUE}}
+\index{BMS\_READY\_VALUE@{BMS\_READY\_VALUE}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BMS\_READY\_VALUE}{BMS\_READY\_VALUE}}
+{\footnotesize\ttfamily \label{config_8h_ae07cc25e494efd05b69e28844ed5180a} 
+const uint8\+\_\+t BMS\+\_\+\+READY\+\_\+\+VALUE = 0x50}
+
+
+
+Expected value for BMS ready. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00051}{51}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_ad3c7e686658c9f549b4106211b5cf023}\index{config.h@{config.h}!BRAKE\_DEPRESSED\_THRESHOLD@{BRAKE\_DEPRESSED\_THRESHOLD}}
+\index{BRAKE\_DEPRESSED\_THRESHOLD@{BRAKE\_DEPRESSED\_THRESHOLD}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BRAKE\_DEPRESSED\_THRESHOLD}{BRAKE\_DEPRESSED\_THRESHOLD}}
+{\footnotesize\ttfamily \label{config_8h_ad3c7e686658c9f549b4106211b5cf023} 
+const unsigned int BRAKE\+\_\+\+DEPRESSED\+\_\+\+THRESHOLD = 512}
+
+
+
+Brake threshold for depressed state. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00065}{65}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a689dd3ea00bfbfff92d0b55f362849c3}\index{config.h@{config.h}!BUZZIN\_TIME@{BUZZIN\_TIME}}
+\index{BUZZIN\_TIME@{BUZZIN\_TIME}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{BUZZIN\_TIME}{BUZZIN\_TIME}}
+{\footnotesize\ttfamily \label{config_8h_a689dd3ea00bfbfff92d0b55f362849c3} 
+const uint32\+\_\+t BUZZIN\+\_\+\+TIME = 2000}
+
+
+
+Buzzer on time in BUZZIN state. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00071}{71}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a87925088512bf5748735f6ecf0efb494}\index{config.h@{config.h}!CAN\_BAUDRATE@{CAN\_BAUDRATE}}
+\index{CAN\_BAUDRATE@{CAN\_BAUDRATE}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{CAN\_BAUDRATE}{CAN\_BAUDRATE}}
+{\footnotesize\ttfamily \label{config_8h_a87925088512bf5748735f6ecf0efb494} 
+const long CAN\+\_\+\+BAUDRATE = CAN\+\_\+500\+KBPS}
+
+
+
+CAN Baudrate. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00045}{45}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a6b172d4141d338e24dabdb4322845521}\index{config.h@{config.h}!CAN\_CS\_BMS@{CAN\_CS\_BMS}}
+\index{CAN\_CS\_BMS@{CAN\_CS\_BMS}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{CAN\_CS\_BMS}{CAN\_CS\_BMS}}
+{\footnotesize\ttfamily \label{config_8h_a6b172d4141d338e24dabdb4322845521} 
+const uint8\+\_\+t CAN\+\_\+\+CS\+\_\+\+BMS = PIN\+\_\+\+PB1}
+
+
+
+Chip select pin for BMS CAN. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00039}{39}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}\index{config.h@{config.h}!CAN\_CS\_DEBUG@{CAN\_CS\_DEBUG}}
+\index{CAN\_CS\_DEBUG@{CAN\_CS\_DEBUG}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{CAN\_CS\_DEBUG}{CAN\_CS\_DEBUG}}
+{\footnotesize\ttfamily \label{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a} 
+const uint8\+\_\+t CAN\+\_\+\+CS\+\_\+\+DEBUG = PIN\+\_\+\+PB0}
+
+
+
+Chip select pin for debug CAN. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00041}{41}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a1efb36152e843ad3793c4afc44eb7655}\index{config.h@{config.h}!CAN\_CS\_MOTOR@{CAN\_CS\_MOTOR}}
+\index{CAN\_CS\_MOTOR@{CAN\_CS\_MOTOR}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{CAN\_CS\_MOTOR}{CAN\_CS\_MOTOR}}
+{\footnotesize\ttfamily \label{config_8h_a1efb36152e843ad3793c4afc44eb7655} 
+const uint8\+\_\+t CAN\+\_\+\+CS\+\_\+\+MOTOR = PIN\+\_\+\+PB2}
+
+
+
+Chip select pin for motor CAN. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00037}{37}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_abb3584639d621819310870d99ad913fe}\index{config.h@{config.h}!DEBUG\_FAULT\_ID@{DEBUG\_FAULT\_ID}}
+\index{DEBUG\_FAULT\_ID@{DEBUG\_FAULT\_ID}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{DEBUG\_FAULT\_ID}{DEBUG\_FAULT\_ID}}
+{\footnotesize\ttfamily \label{config_8h_abb3584639d621819310870d99ad913fe} 
+const uint32\+\_\+t DEBUG\+\_\+\+FAULT\+\_\+\+ID = 0x702}
+
+
+
+Debug CAN ID for faults. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00061}{61}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_af6f627d20efa0e7643b87f103ca65c4e}\index{config.h@{config.h}!DEBUG\_PEDALS\_ID@{DEBUG\_PEDALS\_ID}}
+\index{DEBUG\_PEDALS\_ID@{DEBUG\_PEDALS\_ID}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{DEBUG\_PEDALS\_ID}{DEBUG\_PEDALS\_ID}}
+{\footnotesize\ttfamily \label{config_8h_af6f627d20efa0e7643b87f103ca65c4e} 
+const uint32\+\_\+t DEBUG\+\_\+\+PEDALS\+\_\+\+ID = 0x700}
+
+
+
+Debug CAN ID for pedal readings. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00057}{57}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a7652f31f9673e4d7e38966ab34fbc14a}\index{config.h@{config.h}!DEBUG\_STATE\_ID@{DEBUG\_STATE\_ID}}
+\index{DEBUG\_STATE\_ID@{DEBUG\_STATE\_ID}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{DEBUG\_STATE\_ID}{DEBUG\_STATE\_ID}}
+{\footnotesize\ttfamily \label{config_8h_a7652f31f9673e4d7e38966ab34fbc14a} 
+const uint32\+\_\+t DEBUG\+\_\+\+STATE\+\_\+\+ID = 0x701}
+
+
+
+Debug CAN ID for state. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00059}{59}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a4eb8ce137725a2fdc46c798e2d70442b}\index{config.h@{config.h}!FLIP\_MOTOR\_DIRECTION@{FLIP\_MOTOR\_DIRECTION}}
+\index{FLIP\_MOTOR\_DIRECTION@{FLIP\_MOTOR\_DIRECTION}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{FLIP\_MOTOR\_DIRECTION}{FLIP\_MOTOR\_DIRECTION}}
+{\footnotesize\ttfamily \label{config_8h_a4eb8ce137725a2fdc46c798e2d70442b} 
+const bool FLIP\+\_\+\+MOTOR\+\_\+\+DIRECTION = false}
+
+
+
+Compile-\/\+Time flag to flip motor torque direction. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00075}{75}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a692ebf9745178e18450a6f935acb3bf1}\index{config.h@{config.h}!MOTOR\_TORQUE\_ID@{MOTOR\_TORQUE\_ID}}
+\index{MOTOR\_TORQUE\_ID@{MOTOR\_TORQUE\_ID}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{MOTOR\_TORQUE\_ID}{MOTOR\_TORQUE\_ID}}
+{\footnotesize\ttfamily \label{config_8h_a692ebf9745178e18450a6f935acb3bf1} 
+const uint32\+\_\+t MOTOR\+\_\+\+TORQUE\+\_\+\+ID = 0x201}
+
+
+
+Expected value for BMS ready. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00053}{53}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_aa56d23a21580605c665cd61288d921a6}\index{config.h@{config.h}!PEDAL\_MAX@{PEDAL\_MAX}}
+\index{PEDAL\_MAX@{PEDAL\_MAX}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{PEDAL\_MAX}{PEDAL\_MAX}}
+{\footnotesize\ttfamily \label{config_8h_aa56d23a21580605c665cd61288d921a6} 
+const unsigned int PEDAL\+\_\+\+MAX = 1023}
+
+
+
+MAx pedal ADC value. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00085}{85}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_af41c0a7a07bba36f861c6b852f0833f9}\index{config.h@{config.h}!PEDAL\_MIN@{PEDAL\_MIN}}
+\index{PEDAL\_MIN@{PEDAL\_MIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{PEDAL\_MIN}{PEDAL\_MIN}}
+{\footnotesize\ttfamily \label{config_8h_af41c0a7a07bba36f861c6b852f0833f9} 
+const unsigned int PEDAL\+\_\+\+MIN = 0}
+
+
+
+Minimum pedal ADC value. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00083}{83}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80}\index{config.h@{config.h}!STARTIN\_HOLD\_TIME@{STARTIN\_HOLD\_TIME}}
+\index{STARTIN\_HOLD\_TIME@{STARTIN\_HOLD\_TIME}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{STARTIN\_HOLD\_TIME}{STARTIN\_HOLD\_TIME}}
+{\footnotesize\ttfamily \label{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80} 
+const uint32\+\_\+t STARTIN\+\_\+\+HOLD\+\_\+\+TIME = 2000}
+
+
+
+Hold time for STARTIN state (ms). 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00069}{69}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a66ada2dcde233d77b31b7598d916accb}\index{config.h@{config.h}!TORQUE\_MAX@{TORQUE\_MAX}}
+\index{TORQUE\_MAX@{TORQUE\_MAX}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{TORQUE\_MAX}{TORQUE\_MAX}}
+{\footnotesize\ttfamily \label{config_8h_a66ada2dcde233d77b31b7598d916accb} 
+const int16\+\_\+t TORQUE\+\_\+\+MAX = 32767}
+
+
+
+Maximum torque value. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00079}{79}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+
+\Hypertarget{config_8h_a16aa319a4021e71d485441a72322bd4f}\index{config.h@{config.h}!TORQUE\_MIN@{TORQUE\_MIN}}
+\index{TORQUE\_MIN@{TORQUE\_MIN}!config.h@{config.h}}
+\doxysubsubsection{\texorpdfstring{TORQUE\_MIN}{TORQUE\_MIN}}
+{\footnotesize\ttfamily \label{config_8h_a16aa319a4021e71d485441a72322bd4f} 
+const int16\+\_\+t TORQUE\+\_\+\+MIN = -\/32768}
+
+
+
+Minimum torque value. 
+
+
+
+Definition at line \doxymbox{\hyperlink{config_8h_source_l00077}{77}} of file \doxymbox{\hyperlink{config_8h_source}{config.\+h}}.
+

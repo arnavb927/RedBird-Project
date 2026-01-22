@@ -1,0 +1,508 @@
+\doxysection{src/\+main.cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{src/main.cpp@{src/main.cpp}}
+
+
+Main program for the Red Bird Racing EVRT VCU Handles pedal inputs, state transitions, fault detection, and CAN communications for BMS, motor torque, and debug messages. Implements a state machine for vehicle states:\+ INIT, STARTIN, BUZZIN, DRIVE.  
+
+
+{\ttfamily \+\#include $<$Arduino.\+h$>$}\newline
+{\ttfamily \+\#include $<$config.\+h$>$}\newline
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8}{State}} \{ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}}
+, \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa}{STARTIN}}
+, \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea}{BUZZIN}}
+, \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7}{DRIVE}}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum representing the vehicle states as per project spec. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+MCP2515 \doxymbox{\hyperlink{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}{can\+Motor}} (\doxymbox{\hyperlink{config_8h_a1efb36152e843ad3793c4afc44eb7655}{CAN\+\_\+\+CS\+\_\+\+MOTOR}})
+\begin{DoxyCompactList}\small\item\em CAN interface for motor commands. \end{DoxyCompactList}\item 
+MCP2515 \doxymbox{\hyperlink{main_8cpp_ad308a91e699b1486acdea776bae710de}{can\+BMS}} (\doxymbox{\hyperlink{config_8h_a6b172d4141d338e24dabdb4322845521}{CAN\+\_\+\+CS\+\_\+\+BMS}})
+\begin{DoxyCompactList}\small\item\em CAN interface for BMS communications. \end{DoxyCompactList}\item 
+MCP2515 \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{can\+Debug}} (\doxymbox{\hyperlink{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}{CAN\+\_\+\+CS\+\_\+\+DEBUG}})
+\begin{DoxyCompactList}\small\item\em CAN interface for debug messages. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}{setup}} ()
+\begin{DoxyCompactList}\small\item\em Arduino setup function. Initializes pins and CAN interfaces. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
+\begin{DoxyCompactList}\small\item\em Arduino main loop. Reads inputs, handles state logic computes torque, checks faults, and sends CAN messages. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8}{State}} \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{current\+State}} = \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}}
+\begin{DoxyCompactList}\small\item\em Current Vehicle state. \end{DoxyCompactList}\item 
+uint32\+\_\+t \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{state\+Start\+Time}} = 0
+\begin{DoxyCompactList}\small\item\em Timestamp when the current state started (ms). \end{DoxyCompactList}\item 
+uint32\+\_\+t \doxymbox{\hyperlink{main_8cpp_a43012fd319a22591d3f4d75587ea9575}{fault\+Start\+Time}} = 0
+\begin{DoxyCompactList}\small\item\em Timestamp when an APPS fault was first detected (ms). \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{is\+Faulty}} = false
+\begin{DoxyCompactList}\small\item\em Flag indicating if an APPS fault is active. \end{DoxyCompactList}\item 
+int16\+\_\+t \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculated\+Torque}} = 0
+\begin{DoxyCompactList}\small\item\em Calculated torque value to send to motor (-\/32768 to 32767). \end{DoxyCompactList}\item 
+uint16\+\_\+t \doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}} = 0
+\begin{DoxyCompactList}\small\item\em Raw ADC reading from 5V APPS pedal. \end{DoxyCompactList}\item 
+uint16\+\_\+t \doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3\+V3}} = 0
+\begin{DoxyCompactList}\small\item\em Raw ADC reading from 3.\+3V APPS pedal. \end{DoxyCompactList}\item 
+uint16\+\_\+t \doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}} = 0
+\begin{DoxyCompactList}\small\item\em RAW ADC reading from brake pedal. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4}{start\+Button\+Pressed}} = false
+\begin{DoxyCompactList}\small\item\em Flage if start button is pressed (active low). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main program for the Red Bird Racing EVRT VCU Handles pedal inputs, state transitions, fault detection, and CAN communications for BMS, motor torque, and debug messages. Implements a state machine for vehicle states:\+ INIT, STARTIN, BUZZIN, DRIVE. 
+
+\begin{DoxyAuthor}{Author}
+Arnav 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2026-\/01-\/22 
+\end{DoxyDate}
+\begin{DoxyNote}{Note}
+This code is develop for ATMega328P using arduino framework and MCP2515 library for CAN Calibrate pedal ranges and thresholds as needed. 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{config_8h}{config.\+h} for pin and CAN configurations 
+\end{DoxySeeAlso}
+
+
+Definition in file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+
+
+\label{doc-enum-members}
+\Hypertarget{main_8cpp_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8}\index{main.cpp@{main.cpp}!State@{State}}
+\index{State@{State}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{State}{State}}
+{\footnotesize\ttfamily \label{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8} 
+enum \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8}{State}}}
+
+
+
+Enum representing the vehicle states as per project spec. 
+
+\begin{DoxyNote}{Note}
+States transition:\+ INIT -\/\texorpdfstring{$>$}{>} STARTIN (button + brake) -\/\texorpdfstring{$>$}{>} BUZZIN (BMS ready) -\/\texorpdfstring{$>$}{>} DRIVE Faults revert to INIT 
+\end{DoxyNote}
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INIT@{INIT}!main.cpp@{main.cpp}}
+\index{main.cpp@{main.cpp}!INIT@{INIT}}
+}\Hypertarget{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}\label{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36} 
+INIT&Initial state, no torque, waiting for start conditions \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{STARTIN@{STARTIN}!main.cpp@{main.cpp}}
+\index{main.cpp@{main.cpp}!STARTIN@{STARTIN}}
+}\Hypertarget{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa}\label{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa} 
+STARTIN&Starting state, hold button and brake for 2s \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BUZZIN@{BUZZIN}!main.cpp@{main.cpp}}
+\index{main.cpp@{main.cpp}!BUZZIN@{BUZZIN}}
+}\Hypertarget{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea}\label{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea} 
+BUZZIN&Buzzing state, buzzer on for 2s before drive \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DRIVE@{DRIVE}!main.cpp@{main.cpp}}
+\index{main.cpp@{main.cpp}!DRIVE@{DRIVE}}
+}\Hypertarget{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7}\label{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7} 
+DRIVE&Drive state, computer and send torque, monitor faults \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00030}{30}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}},\ \ \ }
+\DoxyCodeLine{00033\ \ \ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa}{STARTIN}},\ }
+\DoxyCodeLine{00034\ \ \ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea}{BUZZIN}},\ }
+\DoxyCodeLine{00035\ \ \ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7}{DRIVE}}\ \ \ }
+\DoxyCodeLine{00036\ \};}
+
+\end{DoxyCode}
+
+
+\label{doc-func-members}
+\Hypertarget{main_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8cpp_ad308a91e699b1486acdea776bae710de}\index{main.cpp@{main.cpp}!canBMS@{canBMS}}
+\index{canBMS@{canBMS}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{canBMS()}{canBMS()}}
+{\footnotesize\ttfamily \label{main_8cpp_ad308a91e699b1486acdea776bae710de} 
+MCP2515 can\+BMS (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{config_8h_a6b172d4141d338e24dabdb4322845521}{CAN\+\_\+\+CS\+\_\+\+BMS}}}]{}{}\end{DoxyParamCaption})}
+
+
+
+CAN interface for BMS communications. 
+
+\Hypertarget{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}\index{main.cpp@{main.cpp}!canDebug@{canDebug}}
+\index{canDebug@{canDebug}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{canDebug()}{canDebug()}}
+{\footnotesize\ttfamily \label{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17} 
+MCP2515 can\+Debug (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}{CAN\+\_\+\+CS\+\_\+\+DEBUG}}}]{}{}\end{DoxyParamCaption})}
+
+
+
+CAN interface for debug messages. 
+
+\Hypertarget{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}\index{main.cpp@{main.cpp}!canMotor@{canMotor}}
+\index{canMotor@{canMotor}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{canMotor()}{canMotor()}}
+{\footnotesize\ttfamily \label{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7} 
+MCP2515 can\+Motor (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{config_8h_a1efb36152e843ad3793c4afc44eb7655}{CAN\+\_\+\+CS\+\_\+\+MOTOR}}}]{}{}\end{DoxyParamCaption})}
+
+
+
+CAN interface for motor commands. 
+
+\Hypertarget{main_8cpp_afe461d27b9c48d5921c00d521181f12f}\index{main.cpp@{main.cpp}!loop@{loop}}
+\index{loop@{loop}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily \label{main_8cpp_afe461d27b9c48d5921c00d521181f12f} 
+void loop (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Arduino main loop. Reads inputs, handles state logic computes torque, checks faults, and sends CAN messages. 
+
+\begin{DoxyNote}{Note}
+Reads pedals and button, updates outputs, mangages state transtions and sends debug/\+motor CAN frames 
+\end{DoxyNote}
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00126}{126}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//Read\ sensor\ inputs\ }}
+\DoxyCodeLine{00128\ \ \ \doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}}\ =\ analogRead(\doxymbox{\hyperlink{config_8h_afe40c3858724592fa6884996a0f20277}{APPS\_5V\_PIN}});}
+\DoxyCodeLine{00129\ \ \ \doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3V3}}\ =\ analogRead(\doxymbox{\hyperlink{config_8h_af7301f3b5cdc816cb1b4ece1627478a9}{APPS\_3V3\_PIN}});}
+\DoxyCodeLine{00130\ \ \ \doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ =\ analogRead(\doxymbox{\hyperlink{config_8h_ad632b56bf4c6259a390c3db91607078e}{BRAKE\_PIN}});}
+\DoxyCodeLine{00131\ \ \ \doxymbox{\hyperlink{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4}{startButtonPressed}}\ =\ (digitalRead(\doxymbox{\hyperlink{config_8h_af727d34dc72e3f32bd32754111724a0b}{START\_BUTTON\_PIN}})\ ==\ LOW);}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ Update\ brake\ light\ based\ on\ threshold}}
+\DoxyCodeLine{00134\ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_a40511f39470605555d47027fefb4257e}{BRAKE\_LIGHT\_PIN}},\ (\doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ >\ \doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{BRAKE\_DEPRESSED\_THRESHOLD}})\ ?\ HIGH\ :\ LOW);}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \textcolor{comment}{//\ State\ machine\ handling\ }}
+\DoxyCodeLine{00137\ \ \ \textcolor{keywordflow}{switch}\ (\doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}})\ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordflow}{case}\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}}:}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \textcolor{comment}{//\ No\ torque,\ LEDS/buzzer\ off}}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ =\ 0;}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ LOW);}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ LOW);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \textcolor{comment}{//\ transition\ to\ STARTIN\ if\ button\ pressed\ and\ brake\ depressed}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4}{startButtonPressed}}\ \&\&\ \doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ >\ \doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{BRAKE\_DEPRESSED\_THRESHOLD}})}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}}\ =\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa}{STARTIN}};}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ =\ millis();}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \textcolor{keywordflow}{case}\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a5c2da5396d0fff8519688e3fc9e6affa}{STARTIN}}:}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{comment}{//\ No\ torque,\ buzzer/LED\ off}}
+\DoxyCodeLine{00154\ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ =\ 0;}
+\DoxyCodeLine{00155\ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ LOW);}
+\DoxyCodeLine{00156\ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ LOW);}
+\DoxyCodeLine{00157\ \ \ \ \ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{comment}{//\ Check\ hold\ time\ and\ BMS\ ready\ message}}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\doxymbox{\hyperlink{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4}{startButtonPressed}}\ ||\ \doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ <=\ \doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{BRAKE\_DEPRESSED\_THRESHOLD}})\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}}\ =\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00162\ \ \ \ \ \}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{comment}{//Check\ hold\ time\ and\ BMS\ ready\ message}}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keywordflow}{if}\ (millis()\ -\/\ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ >=\ \doxymbox{\hyperlink{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80}{STARTIN\_HOLD\_TIME}})\ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ can\_frame\ msg;}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{main_8cpp_ad308a91e699b1486acdea776bae710de}{canBMS}}.readMessage(\&msg)\ ==\ MCP2515::ERROR\_OK\ \&\&}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ msg.can\_id\ ==\ \doxymbox{\hyperlink{config_8h_a297329203717afc10c1a2493aa9be3dc}{BMS\_READY\_ID}}\ \&\&\ msg.data[\doxymbox{\hyperlink{config_8h_ad89c893bc0dbf99969e732e3a8b32431}{BMS\_READY\_BYTE}}]\ ==\ \doxymbox{\hyperlink{config_8h_ae07cc25e494efd05b69e28844ed5180a}{BMS\_READY\_VALUE}})\ \{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}}\ =\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea}{BUZZIN}};}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ =\ millis();}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00172\ \ \ \ \ \}}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \textcolor{keywordflow}{case}\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a326b21843657aab1c501a85b42a4efea}{BUZZIN}}:}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{comment}{//\ No\ torque,\ buzzer\ on,\ LED\ off}}
+\DoxyCodeLine{00177\ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ =\ 0;}
+\DoxyCodeLine{00178\ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ HIGH);}
+\DoxyCodeLine{00179\ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ LOW);}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{comment}{//\ Transition\ to\ DRIVE\ after\ buzz\ time}}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordflow}{if}\ (millis()\ -\/\ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ >=\ \doxymbox{\hyperlink{config_8h_a689dd3ea00bfbfff92d0b55f362849c3}{BUZZIN\_TIME}})\ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}}\ =\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7}{DRIVE}};}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ =\ millis();}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ LOW);}
+\DoxyCodeLine{00186\ \ \ \ \ \}}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \textcolor{keywordflow}{case}\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8af7b6d6d8e5e14633d388ef9cc7a941b7}{DRIVE}}:}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{comment}{//\ LED\ on}}
+\DoxyCodeLine{00191\ \ \ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ HIGH);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{comment}{//\ Check\ APPS\ fault}}
+\DoxyCodeLine{00194\ \ \ \ \ int32\_t\ left\ =\ (int32\_t)\doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}}\ *\ 33;}
+\DoxyCodeLine{00195\ \ \ \ \ int32\_t\ right\ =\ (int32\_t)\doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3V3}}\ *50;}
+\DoxyCodeLine{00196\ \ \ \ \ int32\_t\ abs\_diff\_scaled\ =\ labs(left-\/right);}
+\DoxyCodeLine{00197\ \ \ \ \ int32\_t\ range\ =\ \doxymbox{\hyperlink{config_8h_aa56d23a21580605c665cd61288d921a6}{PEDAL\_MAX}}\ -\/\ \doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{PEDAL\_MIN}};}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordflow}{if}\ (10\ *\ abs\_diff\_scaled\ >\ range\ *\ 33)\ \{}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!\doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{isFaulty}})\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a43012fd319a22591d3f4d75587ea9575}{faultStartTime}}\ =\ millis();}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{isFaulty}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (millis()\ -\/\ \doxymbox{\hyperlink{main_8cpp_a43012fd319a22591d3f4d75587ea9575}{faultStartTime}}\ >\ \doxymbox{\hyperlink{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537}{APPS\_FAULT\_TIMEOUT}})\ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}}\ =\ \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}};}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ =\ 0;}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{isFaulty}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00209\ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{isFaulty}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00212\ \ \ \ \ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{comment}{//Calculate\ Torque}}
+\DoxyCodeLine{00215\ \ \ \ \ int64\_t\ num\ =\ \textcolor{keyword}{static\_cast<}int64\_t\textcolor{keyword}{>}(left)\ +\ right\ -\/\ \textcolor{keyword}{static\_cast<}int64\_t\textcolor{keyword}{>}(\doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{PEDAL\_MIN}})\ *66;}
+\DoxyCodeLine{00216\ \ \ \ \ int64\_t\ den\ =\ 66LL\ *\ \textcolor{keyword}{static\_cast<}int64\_t\textcolor{keyword}{>}(\doxymbox{\hyperlink{config_8h_aa56d23a21580605c665cd61288d921a6}{PEDAL\_MAX}}-\/\doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{PEDAL\_MIN}});}
+\DoxyCodeLine{00217\ \ \ \ \ int64\_t\ clamped\_num\ =\ (num<0)\ ?\ 0LL\ :\ (num>den)?den:num;}
+\DoxyCodeLine{00218\ \ \ \ \ int16\_t\ torque\_scale\ =\ \doxymbox{\hyperlink{config_8h_a4eb8ce137725a2fdc46c798e2d70442b}{FLIP\_MOTOR\_DIRECTION}}\ ?\ -\/32768\ :\ 32767;}
+\DoxyCodeLine{00219\ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ =\ \textcolor{keyword}{static\_cast<}int16\_t\textcolor{keyword}{>}((clamped\_num\ *\ \textcolor{keyword}{static\_cast<}int64\_t\textcolor{keyword}{>}(torque\_scale))/den);}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{comment}{//\ Send\ motor\ torque}}
+\DoxyCodeLine{00222\ \ \ \ \ can\_frame\ msg;}
+\DoxyCodeLine{00223\ \ \ \ \ msg.can\_id\ =\ \doxymbox{\hyperlink{config_8h_a692ebf9745178e18450a6f935acb3bf1}{MOTOR\_TORQUE\_ID}};}
+\DoxyCodeLine{00224\ \ \ \ \ msg.can\_dlc\ =\ 3;}
+\DoxyCodeLine{00225\ \ \ \ \ msg.data[0]\ =\ 0x90;}
+\DoxyCodeLine{00226\ \ \ \ \ msg.data[1]\ =\ \doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ \&\ 0xFF;}
+\DoxyCodeLine{00227\ \ \ \ \ msg.data[2]\ =\ (\doxymbox{\hyperlink{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}{calculatedTorque}}\ >>\ 8)\ \&\ 0xFF;}
+\DoxyCodeLine{00228\ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}{canMotor}}.sendMessage(\&msg);}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00230\ \ \ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \textcolor{comment}{//\ Send\ debug\ pedal\ readings\ CAN\ message}}
+\DoxyCodeLine{00233\ \ \ can\_frame\ pedalMsg;}
+\DoxyCodeLine{00234\ \ \ pedalMsg.can\_id\ =\ \doxymbox{\hyperlink{config_8h_af6f627d20efa0e7643b87f103ca65c4e}{DEBUG\_PEDALS\_ID}};}
+\DoxyCodeLine{00235\ \ \ pedalMsg.can\_dlc\ =\ 6;}
+\DoxyCodeLine{00236\ \ \ pedalMsg.data[0]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}}\ \&\ 0xFF);}
+\DoxyCodeLine{00237\ \ \ pedalMsg.data[1]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}}\ >>\ 8);}
+\DoxyCodeLine{00238\ \ \ pedalMsg.data[2]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3V3}}\ \&\ 0xFF);}
+\DoxyCodeLine{00239\ \ \ pedalMsg.data[3]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3V3}}\ >>\ 8);}
+\DoxyCodeLine{00240\ \ \ pedalMsg.data[4]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ \&\ 0xFF);}
+\DoxyCodeLine{00241\ \ \ pedalMsg.data[5]\ =\ (uint8\_t)(\doxymbox{\hyperlink{main_8cpp_a0ecf8199152442223ff66320317893d7}{brake}}\ >>\ 8);}
+\DoxyCodeLine{00242\ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.sendMessage(\&pedalMsg);}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \ \ \textcolor{comment}{//\ Send\ debug\ fault\ message\ if\ faulty}}
+\DoxyCodeLine{00245\ \ \ can\_frame\ stateMsg;}
+\DoxyCodeLine{00246\ \ \ stateMsg.can\_id\ =\ \doxymbox{\hyperlink{config_8h_a7652f31f9673e4d7e38966ab34fbc14a}{DEBUG\_STATE\_ID}};}
+\DoxyCodeLine{00247\ \ \ stateMsg.can\_dlc\ =\ 1;}
+\DoxyCodeLine{00248\ \ \ stateMsg.data[0]\ =\ (uint8\_t)\doxymbox{\hyperlink{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}{currentState}};}
+\DoxyCodeLine{00249\ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.sendMessage(\&stateMsg);}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}{isFaulty}})\ \{}
+\DoxyCodeLine{00252\ \ \ \ \ can\_frame\ faultMsg;}
+\DoxyCodeLine{00253\ \ \ \ \ faultMsg.can\_id\ =\ \doxymbox{\hyperlink{config_8h_abb3584639d621819310870d99ad913fe}{DEBUG\_FAULT\_ID}};}
+\DoxyCodeLine{00254\ \ \ \ \ faultMsg.can\_dlc\ =\ 8;\ }
+\DoxyCodeLine{00255\ \ \ \ \ int32\_t\ left\ =\ (int32\_t)\doxymbox{\hyperlink{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}{apps5V}}\ *\ 33;}
+\DoxyCodeLine{00256\ \ \ \ \ int32\_t\ right\ =\ (int32\_t)\doxymbox{\hyperlink{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}{apps3V3}}\ *\ 50;}
+\DoxyCodeLine{00257\ \ \ \ \ int32\_t\ diff\_scaled\ =\ labs(left-\/right);}
+\DoxyCodeLine{00258\ \ \ \ \ uint16\_t\ diff\ =\ \textcolor{keyword}{static\_cast<}int16\_t\textcolor{keyword}{>}((diff\_scaled\ +\ 16)\ /\ 33);}
+\DoxyCodeLine{00259\ \ \ \ \ faultMsg.data[0]\ =\ (uint8\_t)(diff\ \&\ 0xFF);}
+\DoxyCodeLine{00260\ \ \ \ \ faultMsg.data[1]\ =\ (uint8\_t)(diff\ >>\ 8);}
+\DoxyCodeLine{00261\ \ \ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.sendMessage(\&faultMsg);}
+\DoxyCodeLine{00262\ \ \ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \}}
+
+\end{DoxyCode}
+\Hypertarget{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}\index{main.cpp@{main.cpp}!setup@{setup}}
+\index{setup@{setup}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily \label{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d} 
+void setup (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Arduino setup function. Initializes pins and CAN interfaces. 
+
+\begin{DoxyNote}{Note}
+Called once at startup. Sets pin modes, initalizes output to low, resets and configures MCP2515 for 500kbps normal mode 
+\end{DoxyNote}
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00088}{88}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00089\ \ \ \textcolor{comment}{//\ Initializes\ input\ pins}}
+\DoxyCodeLine{00090\ \ \ pinMode(\doxymbox{\hyperlink{config_8h_af727d34dc72e3f32bd32754111724a0b}{START\_BUTTON\_PIN}},\ INPUT);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//Initializes\ output\ pins}}
+\DoxyCodeLine{00093\ \ \ pinMode(\doxymbox{\hyperlink{config_8h_a40511f39470605555d47027fefb4257e}{BRAKE\_LIGHT\_PIN}},\ OUTPUT);}
+\DoxyCodeLine{00094\ \ \ pinMode(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ OUTPUT);}
+\DoxyCodeLine{00095\ \ \ pinMode(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ OUTPUT);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \textcolor{comment}{//\ Set\ inital\ output\ states}}
+\DoxyCodeLine{00098\ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_a40511f39470605555d47027fefb4257e}{BRAKE\_LIGHT\_PIN}},\ LOW);}
+\DoxyCodeLine{00099\ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{BUZZER\_PIN}},\ LOW);}
+\DoxyCodeLine{00100\ \ \ digitalWrite(\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{DRIVE\_LED\_PIN}},\ LOW);}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ Record\ start\ time\ for\ state\ timing}}
+\DoxyCodeLine{00103\ \ \ \doxymbox{\hyperlink{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}{stateStartTime}}\ =\ millis();}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \textcolor{comment}{//\ Initializes\ CAN\ interfaces}}
+\DoxyCodeLine{00106\ \ \ \doxymbox{\hyperlink{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}{canMotor}}.reset();}
+\DoxyCodeLine{00107\ \ \ \doxymbox{\hyperlink{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}{canMotor}}.setBitrate(CAN\_500KBPS,\ MCP\_20MHZ);}
+\DoxyCodeLine{00108\ \ \ \doxymbox{\hyperlink{main_8cpp_a4625bd2bc000874aeb2473a83b9e1aa7}{canMotor}}.setNormalMode();}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \doxymbox{\hyperlink{main_8cpp_ad308a91e699b1486acdea776bae710de}{canBMS}}.reset();}
+\DoxyCodeLine{00111\ \ \ \doxymbox{\hyperlink{main_8cpp_ad308a91e699b1486acdea776bae710de}{canBMS}}.setBitrate(CAN\_500KBPS,\ MCP\_20MHZ);}
+\DoxyCodeLine{00112\ \ \ \doxymbox{\hyperlink{main_8cpp_ad308a91e699b1486acdea776bae710de}{canBMS}}.setNormalMode();}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.reset();}
+\DoxyCodeLine{00115\ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.setBitrate(CAN\_500KBPS,\ MCP\_20MHZ);}
+\DoxyCodeLine{00116\ \ \ \doxymbox{\hyperlink{main_8cpp_a6bb8a6fc97a117b1996b15e425a42c17}{canDebug}}.setNormalMode();}
+\DoxyCodeLine{00117\ \}}
+
+\end{DoxyCode}
+
+
+\label{doc-var-members}
+\Hypertarget{main_8cpp_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f}\index{main.cpp@{main.cpp}!apps3V3@{apps3V3}}
+\index{apps3V3@{apps3V3}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{apps3V3}{apps3V3}}
+{\footnotesize\ttfamily \label{main_8cpp_ab29d15e59c8d53764c7afcdc6fd1f36f} 
+uint16\+\_\+t apps3\+V3 = 0}
+
+
+
+Raw ADC reading from 3.\+3V APPS pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00071}{71}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba}\index{main.cpp@{main.cpp}!apps5V@{apps5V}}
+\index{apps5V@{apps5V}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{apps5V}{apps5V}}
+{\footnotesize\ttfamily \label{main_8cpp_a8f2c3bf8dbd408b41a8df1f0739c07ba} 
+uint16\+\_\+t apps5V = 0}
+
+
+
+Raw ADC reading from 5V APPS pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00066}{66}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a0ecf8199152442223ff66320317893d7}\index{main.cpp@{main.cpp}!brake@{brake}}
+\index{brake@{brake}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{brake}{brake}}
+{\footnotesize\ttfamily \label{main_8cpp_a0ecf8199152442223ff66320317893d7} 
+uint16\+\_\+t brake = 0}
+
+
+
+RAW ADC reading from brake pedal. 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00076}{76}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256}\index{main.cpp@{main.cpp}!calculatedTorque@{calculatedTorque}}
+\index{calculatedTorque@{calculatedTorque}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{calculatedTorque}{calculatedTorque}}
+{\footnotesize\ttfamily \label{main_8cpp_ac0c7a67cf393e58ae2f42342502a1256} 
+int16\+\_\+t calculated\+Torque = 0}
+
+
+
+Calculated torque value to send to motor (-\/32768 to 32767). 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00061}{61}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014}\index{main.cpp@{main.cpp}!currentState@{currentState}}
+\index{currentState@{currentState}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{currentState}{currentState}}
+{\footnotesize\ttfamily \label{main_8cpp_a62d920a9a06d7ac5b8c98e175defd014} 
+\doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8}{State}} current\+State = \doxymbox{\hyperlink{main_8cpp_a5d74787dedbc4e11c1ab15bf487e61f8a0cb1b2c6a7db1f1084886c98909a3f36}{INIT}}}
+
+
+
+Current Vehicle state. 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00041}{41}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a43012fd319a22591d3f4d75587ea9575}\index{main.cpp@{main.cpp}!faultStartTime@{faultStartTime}}
+\index{faultStartTime@{faultStartTime}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{faultStartTime}{faultStartTime}}
+{\footnotesize\ttfamily \label{main_8cpp_a43012fd319a22591d3f4d75587ea9575} 
+uint32\+\_\+t fault\+Start\+Time = 0}
+
+
+
+Timestamp when an APPS fault was first detected (ms). 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00051}{51}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b}\index{main.cpp@{main.cpp}!isFaulty@{isFaulty}}
+\index{isFaulty@{isFaulty}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{isFaulty}{isFaulty}}
+{\footnotesize\ttfamily \label{main_8cpp_ab01b16607c0b0ff809303c908cbe5e6b} 
+bool is\+Faulty = false}
+
+
+
+Flag indicating if an APPS fault is active. 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00056}{56}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4}\index{main.cpp@{main.cpp}!startButtonPressed@{startButtonPressed}}
+\index{startButtonPressed@{startButtonPressed}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{startButtonPressed}{startButtonPressed}}
+{\footnotesize\ttfamily \label{main_8cpp_a1b2c555cf3d2d78bbfdf1823fd9802d4} 
+bool start\+Button\+Pressed = false}
+
+
+
+Flage if start button is pressed (active low). 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00081}{81}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc}\index{main.cpp@{main.cpp}!stateStartTime@{stateStartTime}}
+\index{stateStartTime@{stateStartTime}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{stateStartTime}{stateStartTime}}
+{\footnotesize\ttfamily \label{main_8cpp_a6466ad0814af0e3b08148c06e13f44cc} 
+uint32\+\_\+t state\+Start\+Time = 0}
+
+
+
+Timestamp when the current state started (ms). 
+
+
+
+Definition at line \doxymbox{\hyperlink{main_8cpp_source_l00046}{46}} of file \doxymbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+

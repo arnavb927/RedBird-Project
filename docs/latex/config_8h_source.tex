@@ -1,0 +1,55 @@
+\doxysection{config.\+h}
+\hypertarget{config_8h_source}{}\label{config_8h_source}\index{src/config.h@{src/config.h}}
+\doxymbox{\hyperlink{config_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00011}00011\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00012}00012\ \textcolor{preprocessor}{\#ifndef\ CONFIG\_H}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00013}00013\ \textcolor{preprocessor}{\#define\ CONFIG\_H}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00014}00014\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00015}00015\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <mcp2515.h>}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00018}00018\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00019}00019\ \textcolor{comment}{//\ Pin\ Definitions}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00021}\doxymbox{\hyperlink{config_8h_afe40c3858724592fa6884996a0f20277}{00021}}\ \textcolor{preprocessor}{\#define\ APPS\_5V\_PIN\ PIN\_PC0\ \ \ \ \ }\textcolor{comment}{//\ PC0\ analog}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00023}\doxymbox{\hyperlink{config_8h_af7301f3b5cdc816cb1b4ece1627478a9}{00023}}\ \textcolor{preprocessor}{\#define\ APPS\_3V3\_PIN\ PIN\_PC1\ \ \ \ }\textcolor{comment}{//\ PC1\ analog}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00025}\doxymbox{\hyperlink{config_8h_ad632b56bf4c6259a390c3db91607078e}{00025}}\ \textcolor{preprocessor}{\#define\ BRAKE\_PIN\ PIN\_PC3\ \ \ \ \ \ \ }\textcolor{comment}{//\ PC3\ analog}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00027}\doxymbox{\hyperlink{config_8h_af727d34dc72e3f32bd32754111724a0b}{00027}}\ \textcolor{preprocessor}{\#define\ START\_BUTTON\_PIN\ PIN\_PC4\ }\textcolor{comment}{//\ PC4\ digital\ input}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00029}\doxymbox{\hyperlink{config_8h_a40511f39470605555d47027fefb4257e}{00029}}\ \textcolor{preprocessor}{\#define\ BRAKE\_LIGHT\_PIN\ PIN\_PD2\ }\textcolor{comment}{//\ PD2\ digital\ output}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00031}\doxymbox{\hyperlink{config_8h_ab61d0981ed42df9e18211b273d22cfcd}{00031}}\ \textcolor{preprocessor}{\#define\ BUZZER\_PIN\ PIN\_PD4\ \ \ \ \ \ }\textcolor{comment}{//\ PD4\ digital\ output}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00033}\doxymbox{\hyperlink{config_8h_ad835fecea4df482f517da1f21a2b3efe}{00033}}\ \textcolor{preprocessor}{\#define\ DRIVE\_LED\_PIN\ PIN\_PD3\ \ \ }\textcolor{comment}{//\ PD3\ digital\ output}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00034}00034\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00035}00035\ \textcolor{comment}{//\ CAN\ Pins}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00037}\doxymbox{\hyperlink{config_8h_a1efb36152e843ad3793c4afc44eb7655}{00037}}\ \textcolor{keyword}{const}\ uint8\_t\ \doxymbox{\hyperlink{config_8h_a1efb36152e843ad3793c4afc44eb7655}{CAN\_CS\_MOTOR}}\ =\ PIN\_PB2;\ \ \textcolor{comment}{//\ PB2\ (Arduino\ pin\ 10)}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00039}\doxymbox{\hyperlink{config_8h_a6b172d4141d338e24dabdb4322845521}{00039}}\ \textcolor{keyword}{const}\ uint8\_t\ \doxymbox{\hyperlink{config_8h_a6b172d4141d338e24dabdb4322845521}{CAN\_CS\_BMS}}\ =\ PIN\_PB1;\ \ \ \ \ \textcolor{comment}{//\ PB1\ (Arduino\ pin\ 9)}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00041}\doxymbox{\hyperlink{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}{00041}}\ \textcolor{keyword}{const}\ uint8\_t\ \doxymbox{\hyperlink{config_8h_aca7fdd3b6f64550e8127cbd9aee1644a}{CAN\_CS\_DEBUG}}\ =\ PIN\_PB0;\ \ \ \textcolor{comment}{//\ PB0\ (Arduino\ pin\ 8)}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00042}00042\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00043}00043\ \textcolor{comment}{//\ CAN\ Config}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00045}\doxymbox{\hyperlink{config_8h_a87925088512bf5748735f6ecf0efb494}{00045}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{long}\ \doxymbox{\hyperlink{config_8h_a87925088512bf5748735f6ecf0efb494}{CAN\_BAUDRATE}}\ =\ CAN\_500KBPS;\ \ \textcolor{comment}{//\ Standard\ automotive\ bitrate}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00047}\doxymbox{\hyperlink{config_8h_a297329203717afc10c1a2493aa9be3dc}{00047}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_a297329203717afc10c1a2493aa9be3dc}{BMS\_READY\_ID}}\ =\ 0x186040F3;\ \ \textcolor{comment}{//\ BMS\ readiness\ CAN\ ID}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00049}\doxymbox{\hyperlink{config_8h_ad89c893bc0dbf99969e732e3a8b32431}{00049}}\ \textcolor{keyword}{const}\ uint8\_t\ \doxymbox{\hyperlink{config_8h_ad89c893bc0dbf99969e732e3a8b32431}{BMS\_READY\_BYTE}}\ =\ 6;\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ data[6]}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00051}\doxymbox{\hyperlink{config_8h_ae07cc25e494efd05b69e28844ed5180a}{00051}}\ \textcolor{keyword}{const}\ uint8\_t\ \doxymbox{\hyperlink{config_8h_ae07cc25e494efd05b69e28844ed5180a}{BMS\_READY\_VALUE}}\ =\ 0x50;\ \ \ \ \ \ \textcolor{comment}{//\ Expected\ value\ for\ readiness}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00053}\doxymbox{\hyperlink{config_8h_a692ebf9745178e18450a6f935acb3bf1}{00053}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_a692ebf9745178e18450a6f935acb3bf1}{MOTOR\_TORQUE\_ID}}\ =\ 0x201;\ \ \ \ \textcolor{comment}{//\ Motor\ command\ ID}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00054}00054\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00055}00055\ \textcolor{comment}{//\ Custom\ Debug\ CAN\ IDs}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00057}\doxymbox{\hyperlink{config_8h_af6f627d20efa0e7643b87f103ca65c4e}{00057}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_af6f627d20efa0e7643b87f103ca65c4e}{DEBUG\_PEDALS\_ID}}\ =\ 0x700;\ \ \ \ \textcolor{comment}{//\ Message\ for\ pedal\ readings}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00059}\doxymbox{\hyperlink{config_8h_a7652f31f9673e4d7e38966ab34fbc14a}{00059}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_a7652f31f9673e4d7e38966ab34fbc14a}{DEBUG\_STATE\_ID}}\ =\ 0x701;\ \ \ \ \ \textcolor{comment}{//\ Message\ for\ car\ state}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00061}\doxymbox{\hyperlink{config_8h_abb3584639d621819310870d99ad913fe}{00061}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_abb3584639d621819310870d99ad913fe}{DEBUG\_FAULT\_ID}}\ =\ 0x702;\ \ \ \ \ \textcolor{comment}{//\ Message\ for\ faults\ (send\ only\ on\ fault)}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00062}00062\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00063}00063\ \textcolor{comment}{//\ Thresholds\ and\ Constants}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00065}\doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{00065}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{config_8h_ad3c7e686658c9f549b4106211b5cf023}{BRAKE\_DEPRESSED\_THRESHOLD}}\ =\ 512;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00067}\doxymbox{\hyperlink{config_8h_a5b2ea3a230a711076de2c133be879e0f}{00067}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{config_8h_a5b2ea3a230a711076de2c133be879e0f}{APPS\_FAULT\_THRESHOLD}}\ =\ 0.10;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00069}\doxymbox{\hyperlink{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80}{00069}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_a9491de9e90fbe44d0760c52cc6e6dc80}{STARTIN\_HOLD\_TIME}}\ =\ 2000;\ \ \ \ \ \ \ \textcolor{comment}{//\ 2\ seconds}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00071}\doxymbox{\hyperlink{config_8h_a689dd3ea00bfbfff92d0b55f362849c3}{00071}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_a689dd3ea00bfbfff92d0b55f362849c3}{BUZZIN\_TIME}}\ =\ 2000;\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2\ seconds}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00073}\doxymbox{\hyperlink{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537}{00073}}\ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{config_8h_ac6fc22f8b1d3627c210cd2e40fe24537}{APPS\_FAULT\_TIMEOUT}}\ =\ 100;\ \ \ \ \ \ \ \textcolor{comment}{//\ 100ms\ fault\ duration}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00075}\doxymbox{\hyperlink{config_8h_a4eb8ce137725a2fdc46c798e2d70442b}{00075}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{config_8h_a4eb8ce137725a2fdc46c798e2d70442b}{FLIP\_MOTOR\_DIRECTION}}\ =\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ Compile-\/time\ flip\ for\ torque\ sign}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00077}\doxymbox{\hyperlink{config_8h_a16aa319a4021e71d485441a72322bd4f}{00077}}\ \textcolor{keyword}{const}\ int16\_t\ \doxymbox{\hyperlink{config_8h_a16aa319a4021e71d485441a72322bd4f}{TORQUE\_MIN}}\ =\ -\/32768;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00079}\doxymbox{\hyperlink{config_8h_a66ada2dcde233d77b31b7598d916accb}{00079}}\ \textcolor{keyword}{const}\ int16\_t\ \doxymbox{\hyperlink{config_8h_a66ada2dcde233d77b31b7598d916accb}{TORQUE\_MAX}}\ =\ 32767;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00080}00080\ }
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00081}00081\ \textcolor{comment}{//\ Pedal\ input\ ranges\ (ADC\ 0-\/1023)}}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00083}\doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{00083}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{config_8h_af41c0a7a07bba36f861c6b852f0833f9}{PEDAL\_MIN}}\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00085}\doxymbox{\hyperlink{config_8h_aa56d23a21580605c665cd61288d921a6}{00085}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{config_8h_aa56d23a21580605c665cd61288d921a6}{PEDAL\_MAX}}\ =\ 1023;}
+\DoxyCodeLine{\Hypertarget{config_8h_source_l00086}00086\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
