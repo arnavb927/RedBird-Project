@@ -122,7 +122,6 @@ void setup() {
  * @note Reads pedals and button, updates outputs, mangages state transtions
  *        and sends debug/motor CAN frames
  */
-
 void loop() {
   //Read sensor inputs 
   apps5V = analogRead(APPS_5V_PIN);
@@ -215,8 +214,29 @@ void loop() {
     int64_t num = static_cast<int64_t>(left) + right - static_cast<int64_t>(PEDAL_MIN) *66;
     int64_t den = 66LL * static_cast<int64_t>(PEDAL_MAX-PEDAL_MIN);
     int64_t clamped_num = (num<0) ? 0LL : (num>den)?den:num;
-    int16_t torque_scale = FLIP_MOTOR_DIRECTION ? -32768 : 32767;
-    calculatedTorque = static_cast<int16_t>((clamped_num * static_cast<int64_t>(torque_scale))/den);
+    uint64_t pedal_pos = static_cast<uint16_t>((clamped_num * range) / den) + PEDAL_MIN;
+    uint16_t interpolated_torque = 0;
+    for(int i = 0; i < NUM_POINTS - 1; ++i) {
+      if (pedal_pos >= PEDAL_POINTS[i] && pedal_pos <= PEDAL_POINTS[i + i]) {
+        uint16_t delta_pedal = PEDAL_POINTS[i+1] - PEDAL_POINTS[i];
+        uint16_t pos_in_segment = pedal_pos - PEDAL_POINTS[i];
+
+        int32_t delta_torque = static_cast<int32_t>(TORQUE_POINTS[i+1]) - TORQUE_POINTS[i];
+
+        int64_t temp = static_cast<int64_t>(pos_in_segment) * delta_torque;
+        interpolated_torque = TORQUE_POINTS[i] + static_cast<int16_t>(temp/delta_pedal);
+        break;
+      }
+    }
+
+    if (interpolated_torque < TORQUE_MIN) interpolated_torque = TORQUE_MIN;
+    if (interpolated_torque > TORQUE_MAX) interpolated_torque = TORQUE_MAX;
+
+    if (FLIP_MOTOR_DIRECTION) {
+      interpolated_torque = -interpolated_torque;
+    }
+
+    calculatedTorque = interpolated_torque;
 
     // Send motor torque
     can_frame msg;

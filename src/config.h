@@ -83,4 +83,10 @@ const int16_t TORQUE_MAX = 32767;
 const unsigned int PEDAL_MIN = 0;
 /** @brief MAx pedal ADC value */
 const unsigned int PEDAL_MAX = 1023;
+
+const uint8_t NUM_POINTS = 5;
+
+const uint16_t PEDAL_POINTS[NUM_POINTS] = {0, 100, 200, 300, 1023};
+
+const int16_t TORQUE_POINTS[NUM_POINTS] = {0, 500, 1500, 3000, 32767};
 #endif
