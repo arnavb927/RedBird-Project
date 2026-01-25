@@ -217,7 +217,7 @@ void loop() {
     uint64_t pedal_pos = static_cast<uint16_t>((clamped_num * range) / den) + PEDAL_MIN;
     uint16_t interpolated_torque = 0;
     for(int i = 0; i < NUM_POINTS - 1; ++i) {
-      if (pedal_pos >= PEDAL_POINTS[i] && pedal_pos <= PEDAL_POINTS[i + i]) {
+      if (pedal_pos >= PEDAL_POINTS[i] && pedal_pos <= PEDAL_POINTS[i + 1]) {
         uint16_t delta_pedal = PEDAL_POINTS[i+1] - PEDAL_POINTS[i];
         uint16_t pos_in_segment = pedal_pos - PEDAL_POINTS[i];
 
